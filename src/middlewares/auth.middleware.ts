@@ -53,14 +53,27 @@ export const requirePermission = (permission: Permission) => {
         return next(new AppError('Unauthorized: Authentication required', 401, 'UNAUTHORIZED'));
       }
 
-      await req.adminUser.populate('role');
-      const role = req.adminUser.role as unknown as typeof Role.prototype;
-
-      if (!role) {
-        return next(new AppError('Forbidden: Role not assigned', 403, 'FORBIDDEN'));
+      // Check if user is Super Admin directly on document or role string
+      if (req.adminUser.isSuperAdmin || req.adminUser.role === 'Super Admin') {
+        return next();
       }
 
-      if (role.name === 'Super Admin' || (role.permissions && role.permissions.includes(permission))) {
+      // Try populating if role is a reference object
+      try {
+        await req.adminUser.populate('role');
+      } catch {
+        // Ignore if role is string field
+      }
+
+      const roleObj = req.adminUser.role as any;
+      if (roleObj && typeof roleObj === 'object') {
+        if (roleObj.name === 'Super Admin' || (Array.isArray(roleObj.permissions) && roleObj.permissions.includes(permission))) {
+          return next();
+        }
+      }
+
+      // Fallback check customPermissions array on AdminUser
+      if (Array.isArray(req.adminUser.customPermissions) && req.adminUser.customPermissions.includes(permission)) {
         return next();
       }
 
