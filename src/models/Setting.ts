@@ -2,18 +2,64 @@ import mongoose, { Schema, Document } from 'mongoose';
 
 export interface ISetting extends Document {
   businessName: string;
+  tagline?: string;
+  fullLogoUrl?: string;
+  compactLogoUrl?: string;
+  headerLogoUrl?: string;
+  footerLogoUrl?: string;
+  adminPanelLogoUrl?: string;
+  faviconUrl?: string;
+  phone?: string;
+  whatsapp?: string;
+  email?: string;
+  address?: string;
+  googleMapsUrl?: string;
+  businessHours?: string;
+  socialLinks?: {
+    facebook?: string;
+    twitter?: string;
+    linkedin?: string;
+    instagram?: string;
+  };
+  headerCta?: {
+    text?: string;
+    href?: string;
+    isActive?: boolean;
+  };
+  heroSection?: {
+    badgeText?: string;
+    headlineTitle?: string;
+    headlineAccent?: string;
+    subdescription?: string;
+    primaryCtaText?: string;
+    primaryCtaHref?: string;
+    secondaryCtaText?: string;
+    secondaryCtaHref?: string;
+    heroImageUrl?: string;
+    trustedText?: string;
+  };
+  partnersSection?: {
+    topCaption?: string;
+    headlineText?: string;
+  };
   announcementBar?: {
     text?: string;
     badgeText?: string;
     href?: string;
     isActive?: boolean;
   };
-  headerLogoUrl?: string;
-  footerLogoUrl?: string;
-  adminPanelLogoUrl?: string;
-  partnersSection?: {
-    topCaption?: string;
-    headlineText?: string;
+  footerDescription?: string;
+  copyrightText?: string;
+  analyticsIds?: {
+    googleAnalyticsId?: string;
+    metaPixelId?: string;
+    googleTagManagerId?: string;
+  };
+  defaultSeo?: {
+    metaTitle?: string;
+    metaDescription?: string;
+    keywords?: string[];
+    ogImage?: string;
   };
   maintenanceMode: boolean;
   recipientEmails: string[];
