@@ -15,11 +15,11 @@
     "sourceMap": true,
     "outDir": "./dist",
     "rootDir": "./src",
-    "baseUrl": "./",
+    "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"],
-      "@today-digitech/shared": ["src/types/index.ts"],
-      "@today-digitech/shared/*": ["src/types/*"]
+      "@/*": ["./src/*"],
+      "@today-digitech/shared": ["./src/types/index.ts"],
+      "@today-digitech/shared/*": ["./src/types/*"]
     }
   },
   "include": ["src/**/*"]
