@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
-import multer from 'multer';
+import multer, { FileFilterCallback } from 'multer';
+import { Request } from 'express';
 
 const uploadDir = path.join(__dirname, '../../public/uploads');
 if (!fs.existsSync(uploadDir)) {
@@ -8,10 +9,10 @@ if (!fs.existsSync(uploadDir)) {
 }
 
 const storage = multer.diskStorage({
-  destination: (_req, _file, cb) => {
+  destination: (_req: Request, _file: Express.Multer.File, cb: (error: Error | null, destination: string) => void) => {
     cb(null, uploadDir);
   },
-  filename: (_req, file, cb) => {
+  filename: (_req: Request, file: Express.Multer.File, cb: (error: Error | null, filename: string) => void) => {
     const ext = path.extname(file.originalname) || '.png';
     const uniqueName = `upload-${Date.now()}-${Math.round(Math.random() * 1e9)}${ext}`;
     cb(null, uniqueName);
@@ -23,7 +24,7 @@ export const upload = multer({
   limits: {
     fileSize: 10 * 1024 * 1024, // 10MB max
   },
-  fileFilter: (_req, file, cb) => {
+  fileFilter: (_req: Request, file: Express.Multer.File, cb: FileFilterCallback) => {
     const allowedMimes = [
       'application/pdf',
       'application/msword',

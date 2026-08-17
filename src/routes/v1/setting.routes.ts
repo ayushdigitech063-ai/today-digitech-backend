@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import { Router, Request, Response } from 'express';
 import { getAdminSettings, updateSettings } from '../../controllers/setting.controller';
 import { authenticateAdmin, requirePermission } from '../../middlewares/auth.middleware';
 
@@ -10,7 +10,7 @@ router.use(authenticateAdmin);
 
 router.get('/', requirePermission('MANAGE_SETTINGS'), getAdminSettings);
 router.patch('/', requirePermission('MANAGE_SETTINGS'), updateSettings);
-router.post('/hero-image', requirePermission('MANAGE_SETTINGS'), uploadMiddleware.single('image'), (req, res) => {
+router.post('/hero-image', requirePermission('MANAGE_SETTINGS'), uploadMiddleware.single('image'), (req: Request, res: Response) => {
   if (!req.file) {
     return res.status(400).json({ success: false, message: 'No image file uploaded' });
   }
