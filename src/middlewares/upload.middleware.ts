@@ -3,9 +3,14 @@ import path from 'path';
 import multer, { FileFilterCallback } from 'multer';
 import { Request } from 'express';
 
-const uploadDir = path.join(__dirname, '../../public/uploads');
+export const uploadDir = path.resolve(__dirname, '../../public/uploads');
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
+}
+
+export const frontendUploadDir = path.resolve(__dirname, '../../../frontend/public/uploads');
+if (!fs.existsSync(frontendUploadDir)) {
+  fs.mkdirSync(frontendUploadDir, { recursive: true });
 }
 
 const storage = multer.diskStorage({

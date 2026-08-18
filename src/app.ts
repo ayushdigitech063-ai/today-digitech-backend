@@ -12,7 +12,11 @@ import v1Routes from './routes/v1';
 const app: Express = express();
 
 // 1. Security Headers, CORS, and Cookie Parsing
-app.use(helmet());
+app.use(
+  helmet({
+    crossOriginResourcePolicy: { policy: 'cross-origin' },
+  }),
+);
 app.use(cookieParser());
 app.use(
   cors({
@@ -43,9 +47,10 @@ app.use('/api/v1/public', (req: Request, res: Response, next: NextFunction) => {
 });
 
 import path from 'path';
+import { uploadDir } from './middlewares/upload.middleware';
 
 // Serve uploaded files statically
-app.use('/uploads', express.static(path.join(__dirname, '../public/uploads')));
+app.use('/uploads', express.static(uploadDir));
 
 // 4. Versioned API Routes (/api/v1)
 app.use('/api/v1', v1Routes);
