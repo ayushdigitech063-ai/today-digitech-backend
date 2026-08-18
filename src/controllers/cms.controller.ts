@@ -107,9 +107,21 @@ export const createCmsItem = async (req: AuthenticatedRequest, res: Response, ne
       updatedBy: req.adminUser?.id,
     };
 
+    if (!itemData.slug) {
+      const baseText = itemData.title || itemData.name || itemData.clientName || 'item';
+      itemData.slug = baseText
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/(^-|-$)+/g, '') + `-${Date.now().toString().slice(-6)}`;
+    }
+
     const item = await Model.create(itemData);
-    await logAuditAction(req, 'CREATE', module, { itemId: item.id });
-    await saveRevisionSnapshot(req, module, item.id, item, 'CREATE', `Initial publication of ${module}`);
+    try {
+      await logAuditAction(req, 'CREATE', module, { itemId: item.id || item._id });
+      await saveRevisionSnapshot(req, module, item.id || item._id, item, 'CREATE', `Initial publication of ${module}`);
+    } catch {
+      // Safe non-blocking audit recording
+    }
 
     sendSuccess(res, item, `${module} item created successfully`, 201);
   } catch (error) {
@@ -140,9 +152,13 @@ export const updateCmsItem = async (req: AuthenticatedRequest, res: Response, ne
     Object.assign(item, updateData, { updatedBy: req.adminUser?.id });
     await item.save();
 
-    const action = req.body.status === 'Published' ? 'PUBLISH' : req.body.status === 'Scheduled' ? 'SCHEDULE' : 'UPDATE';
-    await logAuditAction(req, action, module, { itemId: item.id });
-    await saveRevisionSnapshot(req, module, item.id, item, action as any, `Updated content attributes for ${module}`);
+    try {
+      const action = req.body.status === 'Published' ? 'PUBLISH' : req.body.status === 'Scheduled' ? 'SCHEDULE' : 'UPDATE';
+      await logAuditAction(req, action, module, { itemId: item.id || item._id });
+      await saveRevisionSnapshot(req, module, item.id || item._id, item, action as any, `Updated content attributes for ${module}`);
+    } catch {
+      // Safe non-blocking audit recording
+    }
 
     sendSuccess(res, item, `${module} item updated successfully`);
   } catch (error) {

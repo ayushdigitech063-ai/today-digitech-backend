@@ -57,8 +57,8 @@ const caseStudySchema = new Schema<ICaseStudy>(
     results: { type: String, default: '' },
     metrics: [
       {
-        label: { type: String, required: true },
-        value: { type: String, required: true },
+        label: { type: String, default: '' },
+        value: { type: String, default: '' },
         change: String,
         isPositive: { type: Boolean, default: true },
       },
@@ -66,8 +66,8 @@ const caseStudySchema = new Schema<ICaseStudy>(
     beforeAfterImages: [
       {
         label: String,
-        beforeUrl: { type: String, required: true },
-        afterUrl: { type: String, required: true },
+        beforeUrl: { type: String, default: '' },
+        afterUrl: { type: String, default: '' },
       },
     ],
     timeline: String,

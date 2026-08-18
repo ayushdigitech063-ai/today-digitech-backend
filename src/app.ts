@@ -38,10 +38,12 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(sanitizerMiddleware);
 app.use(checkMaintenanceMode);
 
-// Public Read Caching Middleware
+// Real-Time Public Data Sync Middleware (Disable stale HTTP cache)
 app.use('/api/v1/public', (req: Request, res: Response, next: NextFunction) => {
   if (req.method === 'GET') {
-    res.setHeader('Cache-Control', 'public, max-age=300, s-maxage=600, stale-while-revalidate=1200');
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate, max-age=0');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
   }
   next();
 });
